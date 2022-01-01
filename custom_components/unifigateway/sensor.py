@@ -10,66 +10,26 @@ import logging
 import voluptuous as vol
 from datetime import timedelta
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity import Entity
 import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_NAME, CONF_HOST, CONF_USERNAME, CONF_PASSWORD,
-    CONF_MONITORED_CONDITIONS, CONF_VERIFY_SSL)
+from config_flow import (
+    CONF_NAME,
+    CONF_HOST,
+    CONF_USERNAME,
+    CONF_PASSWORD,
+    CONF_SITE_ID,
+    CONF_UNIFI_VERSION,
+    CONF_PORT,
+    CONF_MONITORED_CONDITIONS,
+    CONF_VERIFY_SSL
+)
 
-__version__ = '0.3.4'
+__version__ = '0.3.5'
 
 _LOGGER = logging.getLogger(__name__)
-
-CONF_PORT = 'port'
-CONF_SITE_ID = 'site_id'
-CONF_UNIFI_VERSION = 'version'
-
-DEFAULT_NAME = 'UniFi Gateway'
-DEFAULT_HOST = 'localhost'
-DEFAULT_PORT = 8443
-DEFAULT_UNIFI_VERSION = 'v5'
-DEFAULT_SITE = 'default'
-DEFAULT_VERIFY_SSL = False
-
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=30)
-
-SENSOR_VPN = 'vpn'
-SENSOR_WWW = 'www'
-SENSOR_WAN = 'wan'
-SENSOR_LAN = 'lan'
-SENSOR_WLAN = 'wlan'
-SENSOR_ALERTS = 'alerts'
-SENSOR_FIRMWARE = 'firmware'
-
-USG_SENSORS = {
-    SENSOR_VPN:     ['VPN', '', 'mdi:folder-key-network'],
-    SENSOR_WWW:     ['WWW', '', 'mdi:web'],
-    SENSOR_WAN:     ['WAN', '', 'mdi:shield-outline'],
-    SENSOR_LAN:     ['LAN', '', 'mdi:lan'],
-    SENSOR_WLAN:    ['WLAN','', 'mdi:wifi'],
-    SENSOR_ALERTS:  ['Alerts', '', 'mdi:information-outline'],
-    SENSOR_FIRMWARE:['Firmware Upgradable', '', 'mdi:database-plus']
-}
-
-POSSIBLE_MONITORED = [ SENSOR_VPN, SENSOR_WWW, SENSOR_WAN, SENSOR_LAN,
-                        SENSOR_WLAN, SENSOR_ALERTS, SENSOR_FIRMWARE ]
-DEFAULT_MONITORED = POSSIBLE_MONITORED
-
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-    vol.Optional(CONF_SITE_ID, default=DEFAULT_SITE): cv.string,
-    vol.Required(CONF_PASSWORD): cv.string,
-    vol.Required(CONF_USERNAME): cv.string,
-    vol.Optional(CONF_UNIFI_VERSION, default=DEFAULT_UNIFI_VERSION): cv.string,
-    vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL):
-        vol.Any(cv.boolean, cv.isfile),
-    vol.Optional(CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED):
-        vol.All(cv.ensure_list, [vol.In(POSSIBLE_MONITORED)])
-})
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Unifi sensor."""
